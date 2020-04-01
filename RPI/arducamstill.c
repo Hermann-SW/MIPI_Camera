@@ -350,7 +350,7 @@ int main(int argc, char **argv) {
  printCurrentMode(camera_instance);
  processData.camera_instance = camera_instance;
  processData.state = state;
-  int ret = pthread_create(&processCmd_pt, NULL, prcessCmd,&processData);
+  int ret = pthread_create(&processCmd_pt, NULL, (void * (*)(void *))prcessCmd,&processData);
   if(ret){
       LOG("pthread create failed");
       return 1;

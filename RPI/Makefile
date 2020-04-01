@@ -8,10 +8,11 @@ LDFLAGS	?=
 LIBS	:= -larducam_mipicamera -lpthread
 OLIB	:= lib
 examples:= video4cameras preview_setMode arducamstill capture video list_format capture_raw raw_callback yuv_callback read_write_sensor_reg ov9281_external_trigger 2MPGlobalShuterDemo preview-camera0 preview-dualcam capture-dualcam video2stdout capture2opencv qrcode_detection  opencvGui  
+tools:= y10ptopgm
 %.o : %.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-all: $(examples)
+all: $(examples) $(tools)
 
 arducamstill: arducamstill.c
 	$(CC) $(LDFLAGS) $(CFLAGS) -o $@ $^ $(LIBS)
@@ -33,6 +34,9 @@ list_format: list_format.c
 	$(CC) $(LDFLAGS) $(CFLAGS) -o $@ $^ $(LIBS)
 
 raw_callback: raw_callback.c
+	$(CC) $(LDFLAGS) $(CFLAGS) -o $@ $^ $(LIBS)
+
+y10ptopgm: y10ptopgm.c
 	$(CC) $(LDFLAGS) $(CFLAGS) -o $@ $^ $(LIBS)
 
 read_write_sensor_reg : read_write_sensor_reg.c
@@ -70,7 +74,7 @@ yuv_callback: yuv_callback.c
 
 clean:
 	-rm -f *.o
-	-rm -f $(examples)
+	-rm -f $(examples) $(tools)
 
 .PHONY: install
 
