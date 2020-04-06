@@ -1,4 +1,4 @@
-/* gcc -Wall -Wextra -pedantic spreadpgm.c -o spreadpgm
+/* gcc -Wall -Wextra -pedantic thresholdpgm.c -o thresholdpgm
 */
 #include <stdio.h>
 #include <stdlib.h>
@@ -8,12 +8,13 @@
 int main(int argc, char *argv[])
 {
   unsigned char buf[15+640*480],*p,m=0;
-  int width, height;
+  int width, height, thr;
   double sc;
   FILE *src;
 
-  assert(argc <= 2 || !"spreadpgm [file.pgm]");
-  src = (argc == 1 || strcmp(argv[1], "-") == 0) ? stdin : fopen(argv[1], "rb");
+  assert(argc == 3 || !"thresholdpgm file.pgm thr");
+  src = (strcmp(argv[1], "-") == 0) ? stdin : fopen(argv[1], "rb");
+  thr = atoi(argv[2]);
 
   assert(1 == fread(buf, 15, 1, src));
   assert(2 == sscanf((const char *)buf, "P5\n%d %d\n255\n", &width, &height));
@@ -31,7 +32,7 @@ int main(int argc, char *argv[])
   sc = 254.0 / m;
 
   for(p=buf+15; p<buf+15+width*height; ++p)
-    *p = sc * *p;
+    *p = (sc * *p) > thr ? 255 : 0;
 
   fwrite(buf, 15+width*height, 1, stdout);
 
