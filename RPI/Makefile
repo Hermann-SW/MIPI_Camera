@@ -5,9 +5,9 @@ CXX		:= $(CROSS_COMPILE)g++
 CFLAGS 	?= -I. -g -O0 -std=gnu11
 CXXFLAGS?= -I. -g -std=gnu++11 `pkg-config --cflags --libs opencv`
 LDFLAGS	?=
-LIBS	:= -larducam_mipicamera -lpthread
+LIBS	:= -larducam_mipicamera -lpthread -lpigpio
 OLIB	:= lib
-examples:= video4cameras preview_setMode arducamstill capture video list_format capture_raw raw_callback yuv_callback read_write_sensor_reg ov9281_external_trigger 2MPGlobalShuterDemo preview-camera0 preview-dualcam capture-dualcam video2stdout capture2opencv qrcode_detection  opencvGui  
+examples:= video4cameras preview_setMode arducamstill capture video list_format capture_raw raw_callback braking_eol yuv_callback read_write_sensor_reg ov9281_external_trigger 2MPGlobalShuterDemo preview-camera0 preview-dualcam capture-dualcam video2stdout capture2opencv qrcode_detection  opencvGui  
 tools:= y10ptopgm spreadpgm rawtopgm thresholdpgm
 %.o : %.c
 	$(CC) $(CFLAGS) -c -o $@ $<
@@ -46,6 +46,9 @@ rawtopgm: rawtopgm.c
 	$(CC) $(LDFLAGS) $(CFLAGS) -o $@ $^ $(LIBS)
 
 thresholdpgm: thresholdpgm.c
+	$(CC) $(LDFLAGS) $(CFLAGS) -o $@ $^ $(LIBS)
+
+braking_eol: braking_eol.c
 	$(CC) $(LDFLAGS) $(CFLAGS) -o $@ $^ $(LIBS)
 
 read_write_sensor_reg : read_write_sensor_reg.c
