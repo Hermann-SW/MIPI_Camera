@@ -44,15 +44,12 @@ int line(unsigned char *p, int width)
   return 0;
 }
 
+int stop = 0;
+
 void motor_stop(int r)
 {
   LOG("motor_stop (%d)\n", r);
-  gpioWrite(gpioLeftFwd, 1);
-  gpioWrite(gpioLeftRew, 1);
-  gpioPWM(gpioLeftPwm, (r<3) ? 0 : 255);
-  gpioWrite(gpioRghtFwd, 1);
-  gpioWrite(gpioRghtRew, 1);
-  gpioPWM(gpioRghtPwm, (r<3) ? 0 : 255);
+  stop = r;
 }
 
 FILE *fd;
@@ -186,7 +183,38 @@ int main(int argc, char **argv) {
     struct timespec start, end;
     clock_gettime(CLOCK_REALTIME, &start);
 
-    usleep(1000 * 1000 * 5/2);
+    for(int ms=0; !stop && ms<3000; ++ms)
+    {
+      usleep(1000);
+    }
+
+    if (!stop)
+    {
+      motor_stop(2);
+    }
+
+    assert(stop);
+
+    if (stop == 3)
+    {
+      // full speed forward, for minimal backward braking distance
+      gpioWrite(gpioLeftFwd, 1);
+      gpioWrite(gpioLeftRew, 0);
+      gpioPWM(gpioLeftPwm, 255);
+      gpioWrite(gpioRghtFwd, 1);
+      gpioWrite(gpioRghtRew, 0);
+      gpioPWM(gpioRghtPwm, 255);
+
+      // fixed time for now 
+      usleep(400000);
+    }
+
+    gpioWrite(gpioLeftFwd, 0);
+    gpioWrite(gpioLeftRew, 0);
+    gpioPWM(gpioLeftPwm, 0);
+    gpioWrite(gpioRghtFwd, 0);
+    gpioWrite(gpioRghtRew, 0);
+    gpioPWM(gpioRghtPwm, 0);
 
     clock_gettime(CLOCK_REALTIME, &end);
 
