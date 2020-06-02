@@ -8,7 +8,7 @@ LDFLAGS	?=
 LIBS	:= -larducam_mipicamera -lpthread -lpigpio
 OLIB	:= lib
 examples:= video4cameras preview_setMode arducamstill capture video list_format capture_raw raw_callback braking_eol yuv_callback read_write_sensor_reg ov9281_external_trigger 2MPGlobalShuterDemo preview-camera0 preview-dualcam capture-dualcam video2stdout capture2opencv qrcode_detection  opencvGui  
-tools:= y10ptopgm spreadpgm rawtopgm thresholdpgm
+tools:= y10ptopgm spreadpgm rawtopgm thresholdpgm raw_callback_fb1
 %.o : %.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
@@ -25,6 +25,8 @@ video4cameras: video4cameras.c
 capture: capture.c
 	$(CC) $(LDFLAGS) $(CFLAGS) -o $@ $^ $(LIBS)
 capture_raw: capture_raw.c
+	$(CC) $(LDFLAGS) $(CFLAGS) -o $@ $^ $(LIBS)
+raw_callback_fb1: raw_callback_fb1.c
 	$(CC) $(LDFLAGS) $(CFLAGS) -o $@ $^ $(LIBS)
 
 video: video.c
